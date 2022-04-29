@@ -4,7 +4,7 @@ import requests
 #Scrape the web and find the company's stock data
 def get_stock_info(ncompany):
     #Getting the url
-    URL = "https://www.google.com/search?q={}+stock&rlz=1C1CHBF_enUS962US962&sxsrf=ALiCzsYrFvoNHcQ6waoqxD94uasSkjPDgA%3A1651188111073&ei=jyFrYqqBBOi7ytMPqriwwAw&ved=0ahUKEwjqhMWG87f3AhXonXIEHSocDMgQ4dUDCA4&uact=5&oq=Tesla+stock&gs_lcp=Cgdnd3Mtd2l6EAMyDAgjECcQnQIQRhD6ATIECCMQJzIECCMQJzILCAAQgAQQsQMQgwEyEAgAEIAEEIcCELEDEIMBEBQyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDATILCAAQgAQQsQMQgwEyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDAToHCCMQsAMQJzoHCAAQRxCwAzoHCAAQsAMQQzoKCAAQ5AIQsAMYAToSCC4QxwEQowIQyAMQsAMQQxgCOhUILhDHARCjAhDUAhDIAxCwAxBDGAI6BQgAEJECOggILhCABBCxAzoOCC4QgAQQsQMQxwEQowI6BQgAEIAEOggIABCxAxCDAToHCCMQ6gIQJzoECAAQQzoKCAAQsQMQgwEQQzoTCC4QsQMQgwEQxwEQowIQ1AIQQzoLCC4QgAQQxwEQrwE6CAgAEIAEELEDOhQILhCABBCxAxCDARDHARCjAhDUAjoKCC4QxwEQowIQQzoLCC4QgAQQsQMQgwFKBAhBGABKBAhGGAFQuA1Yr0lgskxoBXABeASAAfkGiAH-J5IBDTAuOS4yLjIuMS4yLjGYAQCgAQGwAQrIARHAAQHaAQYIARABGAnaAQYIAhABGAg&sclient=gws-wiz".format(ncompany)
+    URL = "https://www.google.com/search?q={}+stock&rlz=1C1CHBF_enUS962US962&sxsrf=ALiCzsb6WgfM55vA3L8LMRtQ8Z8X3_FQ9g%3A1651241562232&ei=WvJrYs_JDb-E9u8P0d2YiAY&ved=0ahUKEwjP3oSWurn3AhU_gv0HHdEuBmEQ4dUDCA8&uact=5&oq=Microsoft+stock&gs_lcp=Cgdnd3Mtd2l6EAMyDAgjECcQnQIQRhD6ATIECCMQJzIECCMQJzILCAAQsQMQgwEQkQIyCwgAEIAEELEDEIMBMggIABCABBCxAzILCAAQgAQQsQMQgwEyCwgAEIAEELEDEIMBMggIABCABBCxAzILCAAQgAQQsQMQgwE6BwgjELADECc6BwgAEEcQsAM6BwgjECcQnQI6BAgAEEM6CggAELEDEIMBEEM6EAgAEIAEEIcCELEDEIMBEBQ6BggAEAcQHjoHCCMQsQIQJ0oECEEYAEoECEYYAFCWFlirK2C4MWgBcAF4AYABlQSIAYoSkgELMC45LjAuMS4wLjGYAQCgAQHIAQnAAQE&sclient=gws-wiz".format(ncompany)
     page = requests.get(URL)
     formatted = page.text.split("<")
 
@@ -17,7 +17,7 @@ def get_stock_info(ncompany):
                 price = float(price)
                 break
         else:
-            price = "NULL"
+            price = 0
 
 
     changes = []
@@ -29,21 +29,20 @@ def get_stock_info(ncompany):
         if "UMOHqf JoSNhf" in index:
             changes.append(float(index[0:-8].split(">")[-1].replace(",","")))
     #Creating variables
-    if len(changes) == 2:
+    if len(changes) == 1:
+        duringhours = changes[0]
+        afterhours = 0
+    elif len(changes) == 2:
         duringhours = changes[0]
         afterhours = changes[1]
+    elif len(changes) == 0:
+        duringhours = 0
+        afterhours = 0
     else:
-        duringhours = "NULL"
-        afterhours = "NULL"
+        duringhours = 0
+        afterhours = 0
 
-    # This is where the algorithmic portion fo my code will take place
-    if duringhours + afterhours > 1:
-        print("Buy")
-    elif duringhours + afterhours < 1:
-        print("Sell")
-    else:
-        print("Pause")
-
+   #Checking if a variable is unspecified
     if price == "NULL" or duringhours == "NULL" or afterhours == "NULL":
         #print("ERROR: INCORECTD WEB FORMATTING")
         #print("NOTE: Try a different company.")
@@ -54,8 +53,7 @@ def get_stock_info(ncompany):
 
 
 #Show detailed output
-def details(company, data):
-    print("Company: {}".format(company))
+def details(data):
     print("Stock Price: {}".format(data["price"]))
     print("Price During Hours: {}".format(data["duringhours"]))
     print("Price After Hours: {}".format(data["afterhours"]))
@@ -65,9 +63,9 @@ def details(company, data):
 #Determine to Buy or Sell
 def evaluate(data):
     if data["price"] != "NULL" and data["duringhours"] != "NULL" and data["afterhours"] != "NULL":
-        if data["duringhours"] + data["afterhours"] < 1:
+        if data["duringhours"] + data["afterhours"] < 0:
             return "---SELL"
-        elif data["duringhours"] + data["afterhours"] > 1:
+        elif data["duringhours"] + data["afterhours"] > 0:
             return "---BUY"
     else:
         return "---FAILURE"
@@ -89,7 +87,7 @@ if __name__ == "__main__":
         print("Company: {}".format(index[-6:-1].split(" ")[-1]))        
         companystockinfo = get_stock_info(index[-6:-1].split(" ")[-1])
 #        print(companystockinfo)
-#        details(index[-6:-1].split(" ")[-1],companystockinfo)
+        details(companystockinfo)
         print(evaluate(companystockinfo))
 
 
