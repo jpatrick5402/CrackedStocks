@@ -67,6 +67,10 @@ def evaluate(data):
     else:
         return "---FAILURE"
 
+#Automatically invest with API
+def Auto_Invest():
+    pass
+
 
 if __name__ == "__main__":
 
@@ -81,3 +85,6 @@ if __name__ == "__main__":
         companystockinfo = get_stock_info(index[-6:-1].split(" ")[-1])
 #        print(companystockinfo)
         print(evaluate(companystockinfo))
+
+
+
