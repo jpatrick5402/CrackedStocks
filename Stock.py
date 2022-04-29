@@ -1,11 +1,11 @@
 import requests
 import json
 import math
-import webbrowser as wb
+
 
 #Getting the url
-company = ""
-URL = "https://www.google.com/search?q=Tesla+stock&rlz=1C1CHBF_enUS962US962&sxsrf=ALiCzsYrFvoNHcQ6waoqxD94uasSkjPDgA%3A1651188111073&ei=jyFrYqqBBOi7ytMPqriwwAw&ved=0ahUKEwjqhMWG87f3AhXonXIEHSocDMgQ4dUDCA4&uact=5&oq=Tesla+stock&gs_lcp=Cgdnd3Mtd2l6EAMyDAgjECcQnQIQRhD6ATIECCMQJzIECCMQJzILCAAQgAQQsQMQgwEyEAgAEIAEEIcCELEDEIMBEBQyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDATILCAAQgAQQsQMQgwEyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDAToHCCMQsAMQJzoHCAAQRxCwAzoHCAAQsAMQQzoKCAAQ5AIQsAMYAToSCC4QxwEQowIQyAMQsAMQQxgCOhUILhDHARCjAhDUAhDIAxCwAxBDGAI6BQgAEJECOggILhCABBCxAzoOCC4QgAQQsQMQxwEQowI6BQgAEIAEOggIABCxAxCDAToHCCMQ6gIQJzoECAAQQzoKCAAQsQMQgwEQQzoTCC4QsQMQgwEQxwEQowIQ1AIQQzoLCC4QgAQQxwEQrwE6CAgAEIAEELEDOhQILhCABBCxAxCDARDHARCjAhDUAjoKCC4QxwEQowIQQzoLCC4QgAQQsQMQgwFKBAhBGABKBAhGGAFQuA1Yr0lgskxoBXABeASAAfkGiAH-J5IBDTAuOS4yLjIuMS4yLjGYAQCgAQGwAQrIARHAAQHaAQYIARABGAnaAQYIAhABGAg&sclient=gws-wiz"
+company = input("Comany: ")
+URL = "https://www.google.com/search?q={}+stock&rlz=1C1CHBF_enUS962US962&sxsrf=ALiCzsYrFvoNHcQ6waoqxD94uasSkjPDgA%3A1651188111073&ei=jyFrYqqBBOi7ytMPqriwwAw&ved=0ahUKEwjqhMWG87f3AhXonXIEHSocDMgQ4dUDCA4&uact=5&oq=Tesla+stock&gs_lcp=Cgdnd3Mtd2l6EAMyDAgjECcQnQIQRhD6ATIECCMQJzIECCMQJzILCAAQgAQQsQMQgwEyEAgAEIAEEIcCELEDEIMBEBQyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDATILCAAQgAQQsQMQgwEyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDAToHCCMQsAMQJzoHCAAQRxCwAzoHCAAQsAMQQzoKCAAQ5AIQsAMYAToSCC4QxwEQowIQyAMQsAMQQxgCOhUILhDHARCjAhDUAhDIAxCwAxBDGAI6BQgAEJECOggILhCABBCxAzoOCC4QgAQQsQMQxwEQowI6BQgAEIAEOggIABCxAxCDAToHCCMQ6gIQJzoECAAQQzoKCAAQsQMQgwEQQzoTCC4QsQMQgwEQxwEQowIQ1AIQQzoLCC4QgAQQxwEQrwE6CAgAEIAEELEDOhQILhCABBCxAxCDARDHARCjAhDUAjoKCC4QxwEQowIQQzoLCC4QgAQQsQMQgwFKBAhBGABKBAhGGAFQuA1Yr0lgskxoBXABeASAAfkGiAH-J5IBDTAuOS4yLjIuMS4yLjGYAQCgAQGwAQrIARHAAQHaAQYIARABGAnaAQYIAhABGAg&sclient=gws-wiz".format(company)
 page = requests.get(URL)
 formatted = page.text.split("<")
 
@@ -33,10 +33,10 @@ for index in formatted:
 #Using the data to make a descision
 duringhours = changes[0]
 afterhours = changes[1]
-
+print("Company: {}".format(company))
 print("Stock Price: {}".format(price))
-print("Price".format(duringhours))
-print(afterhours)
+print("Price During Hours: {}".format(duringhours))
+print("Price After Hours: {}".format(afterhours))
 
 
 # This is where the algorithmic portion fo my code will take place
@@ -44,3 +44,5 @@ if duringhours + afterhours > 1:
     print("Buy")
 elif duringhours + afterhours < 1:
     print("Sell")
+else:
+    print("Pause")
