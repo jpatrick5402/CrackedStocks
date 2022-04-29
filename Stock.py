@@ -36,19 +36,13 @@ def get_stock_info(ncompany):
         duringhours = "NULL"
         afterhours = "NULL"
 
-#    print("Company: {}".format(ncompany))
-#    print("Stock Price: {}".format(price))
-#    print("Price During Hours: {}".format(duringhours))
-#    print("Price After Hours: {}".format(afterhours))
-
-
     # This is where the algorithmic portion fo my code will take place
-#    if duringhours + afterhours > 1:
-#        print("Buy")
-#    elif duringhours + afterhours < 1:
-#        print("Sell")
-#    else:
-#        print("Pause")
+    if duringhours + afterhours > 1:
+        print("Buy")
+    elif duringhours + afterhours < 1:
+        print("Sell")
+    else:
+        print("Pause")
 
     if price == "NULL" or duringhours == "NULL" or afterhours == "NULL":
         #print("ERROR: INCORECTD WEB FORMATTING")
@@ -57,6 +51,17 @@ def get_stock_info(ncompany):
         
     return {"price":price,"duringhours":duringhours,"afterhours":afterhours}
 
+
+
+#Show detailed output
+def details(company, data):
+    print("Company: {}".format(company))
+    print("Stock Price: {}".format(data["price"]))
+    print("Price During Hours: {}".format(data["duringhours"]))
+    print("Price After Hours: {}".format(data["afterhours"]))
+
+
+    
 #Determine to Buy or Sell
 def evaluate(data):
     if data["price"] != "NULL" and data["duringhours"] != "NULL" and data["afterhours"] != "NULL":
@@ -81,9 +86,10 @@ if __name__ == "__main__":
 
 
     for index in formedabbr:
-        print(index[-6:-1].split(" ")[-1])        
+        print("Company: {}".format(index[-6:-1].split(" ")[-1]))        
         companystockinfo = get_stock_info(index[-6:-1].split(" ")[-1])
 #        print(companystockinfo)
+#        details(index[-6:-1].split(" ")[-1],companystockinfo)
         print(evaluate(companystockinfo))
 
 
