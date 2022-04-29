@@ -1,9 +1,5 @@
 import requests
-import json
-#import math
-
-
-
+#import json
 
 #Scrape the web and find the company's stock data
 def get_stock_info(ncompany):
@@ -17,7 +13,7 @@ def get_stock_info(ncompany):
         if "BNeawe iBp4i AP7Wnd" in index:
             h=index.split(">")
             if h[-1] != "":
-                price = h[-1].strip()
+                price = h[-1].replace(",","")
                 price = float(price)
                 break
         else:
@@ -25,15 +21,15 @@ def get_stock_info(ncompany):
 
 
     changes = []
-
+    #Looking for more nums
     for index in formatted:
         if "UMOHqf fePwtd" in index:
-            changes.append(float(index[0:-8].split(">")[-1]))
+            changes.append(float(index[0:-8].split(">")[-1].replace(",","")))
 
         if "UMOHqf JoSNhf" in index:
-            changes.append(float(index[0:-8].split(">")[-1]))
-
-    if changes:
+            changes.append(float(index[0:-8].split(">")[-1].replace(",","")))
+    #Creating variables
+    if len(changes) == 2:
         duringhours = changes[0]
         afterhours = changes[1]
     else:
@@ -65,11 +61,11 @@ def get_stock_info(ncompany):
 def evaluate(data):
     if data["price"] != "NULL" and data["duringhours"] != "NULL" and data["afterhours"] != "NULL":
         if data["duringhours"] + data["afterhours"] < 1:
-            return "SELL"
+            return "---SELL"
         elif data["duringhours"] + data["afterhours"] > 1:
-            return "BUY"
+            return "---BUY"
     else:
-        return "FAILURE"
+        return "---FAILURE"
 
 
 if __name__ == "__main__":
@@ -81,7 +77,7 @@ if __name__ == "__main__":
 
 
     for index in formedabbr:
-        print(index[-6:-1])
-        companystockinfo = get_stock_info(index[-6:-1])
-        print(companystockinfo)
+        print(index[-6:-1].split(" ")[-1])        
+        companystockinfo = get_stock_info(index[-6:-1].split(" ")[-1])
+#        print(companystockinfo)
         print(evaluate(companystockinfo))
