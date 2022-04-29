@@ -4,7 +4,7 @@ import requests
 #Scrape the web and find the company's stock data
 def get_stock_info(ncompany):
     #Getting the url
-    URL = "https://www.google.com/search?q={}+stock&rlz=1C1CHBF_enUS962US962&sxsrf=ALiCzsb6WgfM55vA3L8LMRtQ8Z8X3_FQ9g%3A1651241562232&ei=WvJrYs_JDb-E9u8P0d2YiAY&ved=0ahUKEwjP3oSWurn3AhU_gv0HHdEuBmEQ4dUDCA8&uact=5&oq=Microsoft+stock&gs_lcp=Cgdnd3Mtd2l6EAMyDAgjECcQnQIQRhD6ATIECCMQJzIECCMQJzILCAAQsQMQgwEQkQIyCwgAEIAEELEDEIMBMggIABCABBCxAzILCAAQgAQQsQMQgwEyCwgAEIAEELEDEIMBMggIABCABBCxAzILCAAQgAQQsQMQgwE6BwgjELADECc6BwgAEEcQsAM6BwgjECcQnQI6BAgAEEM6CggAELEDEIMBEEM6EAgAEIAEEIcCELEDEIMBEBQ6BggAEAcQHjoHCCMQsQIQJ0oECEEYAEoECEYYAFCWFlirK2C4MWgBcAF4AYABlQSIAYoSkgELMC45LjAuMS4wLjGYAQCgAQHIAQnAAQE&sclient=gws-wiz".format(ncompany)
+    URL = "https://www.google.com/search?q={}+stock".format(ncompany)
     page = requests.get(URL)
     formatted = page.text.split("<")
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         print("Company: {}".format(index[-6:-1].split(" ")[-1]))        
         companystockinfo = get_stock_info(index[-6:-1].split(" ")[-1])
 #        print(companystockinfo)
-        details(companystockinfo)
+#        details(companystockinfo)
         print(evaluate(companystockinfo))
 
 
