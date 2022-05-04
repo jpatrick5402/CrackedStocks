@@ -7,7 +7,9 @@ int get_html(char *companyname){
     WSADATA wsaData;
     SOCKET hostSock = INVALID_SOCKET;
     struct addrinfo *hostAddrInfo = NULL, *attemptAddrInfo = NULL, hintsAddrInfo;
-    char *sendbuf = "GET /search?q=Microsoft+Stocks HTTP/1.1\n\n";
+//    char *sendbuf = "GET /search?q=Microsoft+Stocks HTTP/1.1\n\n";
+    char sendbuf[100];
+    sprintf(sendbuf, "%s%s%s", "GET /search?q=",companyname,"+Stocks HTTP/1.1\n\n");
     char recvbuf[ 512 ];
     int recvbuflen = 512;
     int result;
@@ -103,10 +105,32 @@ int get_html(char *companyname){
 int find_data(){
     FILE *fp;
     fp = fopen("file.txt", "r");
+    int iter;
+    char *d = "BNeawe iBp4i AP7Wnd";
+    int flag = 0;
+    while(1){
+        iter = fgetc(fp);
+        if(iter == *d){
+            flag = 1;
+            d++;
+        }else{
+            flag = 0;
+        }
+
+        if (*d == 'd'){
+            printf("Yay");
+            break;
+            }
+        }
+    
+    if(flag){
+        printf("Yay x2");
+    }
+
 
 }
 
 int main(){
-    get_html("Microsoft");
-//    find_data();
+    get_html("Tesla");
+    find_data();
 }
