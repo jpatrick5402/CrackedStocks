@@ -3,15 +3,15 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
-int get_html(){
+int get_html(char *companyname){
     WSADATA wsaData;
     SOCKET hostSock = INVALID_SOCKET;
     struct addrinfo *hostAddrInfo = NULL, *attemptAddrInfo = NULL, hintsAddrInfo;
-    char *sendbuf = "GET / HTTP/1.1\n\n";
+    char *sendbuf = "GET /search?q=Microsoft+Stocks HTTP/1.1\n\n";
     char recvbuf[ 512 ];
     int recvbuflen = 512;
     int result;
-
+    
     result = WSAStartup( MAKEWORD( 2,2 ), &wsaData );
     if ( result != 0 ) {
         printf( "WSAStartup failed with error: %d\n", result );
@@ -102,11 +102,11 @@ int get_html(){
 
 int find_data(){
     FILE *fp;
-    fp = open("file.txt", "r");
+    fp = fopen("file.txt", "r");
 
 }
 
 int main(){
-    get_html();
+    get_html("Microsoft");
 //    find_data();
 }
