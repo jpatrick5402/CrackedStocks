@@ -77,18 +77,21 @@ int get_html(){
     }
 
 	int preview = 0, total = 0;
+    FILE *fp;
+    fp = fopen( "file.txt", "w");
     do {
 
         result = recv( hostSock, recvbuf, recvbuflen, 0 );
         if ( result > 0 ) {
 			total += result;
-			if( preview < 1000 ) { fwrite( recvbuf, 1, result, stdout ); preview += result; }
+			if( preview < 100000 ) { fwrite( recvbuf, 1, result, fp ); preview += result; }
         } else if( result == 0 )
             printf( "Connection closed\n" );
         else
             printf( "recv failed with error: %d\n", WSAGetLastError( ) );
 
     } while( result > 0 );
+    fclose(fp);
     printf( "\n\nBytes received: %d\n", total );
 
     closesocket( hostSock );
@@ -97,10 +100,13 @@ int get_html(){
     return 0;
 }
 
-int find_data(int text){
+int find_data(){
+    FILE *fp;
+    fp = open("file.txt", "r");
 
 }
 
 int main(){
     get_html();
+//    find_data();
 }
