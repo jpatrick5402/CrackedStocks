@@ -86,7 +86,7 @@ int get_html(char *companyname){
         result = recv( hostSock, recvbuf, recvbuflen, 0 );
         if ( result > 0 ) {
 			total += result;
-			if( preview < 100000 ) { fwrite( recvbuf, 1, result, fp ); preview += result; }
+			if( preview < 166900 ) { fwrite( recvbuf, 1, result, fp ); preview += result; }
         } else if( result == 0 )
             printf( "Connection closed\n" );
         else
@@ -98,36 +98,36 @@ int get_html(char *companyname){
 
     closesocket( hostSock );
     WSACleanup( );
-
+    printf("file.txt successfully updated\n");
     return 0;
 }
 
 int find_data(){
     FILE *fp;
     fp = fopen("file.txt", "r");
-    int iter;
-    char *d = "BNeawe iBp4i AP7Wnd";
-    int flag = 0;
-    while(1){
+    char iter;
+    char *diter = "class=\"BNeawe iBp4i AP7Wnd\"><div><div class=\"BNeawe iBp4i AP7Wnd\">";
+    int count = 0;
+    while (1) {
         iter = fgetc(fp);
-        if(iter == *d){
-            flag = 1;
-            d++;
-        }else{
-            flag = 0;
+        if (iter == *diter) {
+            printf("\n\n%c found\n\n", *diter);
+            count++;
+            diter++;
         }
-
-        if (*d == 'd'){
-            printf("Yay");
+        else {
+            diter = diter - count;
+            count = 0;
+        }
+        printf("%c", iter);
+        if (*diter == 'd') {
             break;
             }
         }
-    
-    if(flag){
-        printf("Yay x2");
     }
+    
 
-
+    return 0;
 }
 
 int main(){
