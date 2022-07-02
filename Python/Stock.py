@@ -1,5 +1,11 @@
 import requests
-#import json
+import os
+import time
+
+def get_company_names(): #Gets ticker name for every U.S. company on nasdaq
+    with open("../TickerList.txt", "r") as f:
+        namelist = f.readlines()
+    return namelist
 
 #Scrape the web and find the company's stock data
 def get_stock_info(ncompany):
@@ -50,15 +56,12 @@ def get_stock_info(ncompany):
         
     return {"price":price,"duringhours":duringhours,"afterhours":afterhours}
 
-
-
-#Show detailed output
-def details(data):
-    print("Stock Price: {}".format(data["price"]))
-    print("Price During Hours: {}".format(data["duringhours"]))
-    print("Price After Hours: {}".format(data["afterhours"]))
-
-
+def get_stock_info_API(company): #Gets critical stock information from Alpha Vantage API
+    Key = os.environ.get("KEY")
+    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={company}&interval=5min&apikey={Key}'
+    r = requests.get(url)
+    data = r.json()
+    return data
     
 #Determine to Buy or Sell
 def evaluate(data):
@@ -71,24 +74,16 @@ def evaluate(data):
         return "---FAILURE"
 
 #Automatically invest with API
-def Auto_Invest():
+def invest():
     pass
 
+def main():
+    total = get_company_names()
+    print(total[0].split(" ")[0])
+    for i in total:
+        print(i.split(" ")[0])
+        data = get_stock_info_API(i.split(" ")[0])
+        time.sleep(1)
 
 if __name__ == "__main__":
-
-    with open("file.txt", "r") as f:
-        fstring = f.read()
-
-    formedabbr = fstring.split("$")
-
-
-    for index in formedabbr:
-        print("Company: {}".format(index[-6:-1].split(" ")[-1]))        
-        companystockinfo = get_stock_info(index[-6:-1].split(" ")[-1])
-#        print(companystockinfo)
-#        details(companystockinfo)
-        print(evaluate(companystockinfo))
-
-
-
+    main()
