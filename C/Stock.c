@@ -102,16 +102,16 @@ int get_html(char *companyname){
     return 0;
 }
 
-char find_data() {
+char *find_data() {
     FILE* fp;
     fp = fopen("file.txt", "r");
     char iter;
     char* diter = "BNeawe iBp4i AP7Wnd";
     int count = 0;
-    int count2 = 55;
+    int count2 = 49;
     int flag = 0;
     int kill = 0;
-    char num[55];
+    char* num;
     while (1) {
         iter = fgetc(fp);
         if (iter == *diter) {
@@ -125,33 +125,37 @@ char find_data() {
         }
         
         if (*diter == 'd') {
-            printf("%c", iter);
             flag = 1;
         }
         if (flag) {
-            printf("%c", iter);
+            //printf("%c", iter);
             if (count2 == 0){
                 kill = 1;
             }
             else {
                 count2 = count2 - 1;
-                num[55] = num[55] + iter;
+                *num = iter;
+                num++;
             }
         }
         if (kill) {
+            num = num - 8;
             break;
         }
     }
 
     
 
-    return num[55];
+    return num;
 }
 
 int main(){
-    get_html("Tesla");
-    char data = find_data();
-    for (int i; i < 20; i++) {
-        printf("%c", data[i]);
+
+    get_html("BP");
+    char *data = find_data();
+    for (int i = 0; i < 9; i++) {
+        data++;
+        printf("%c", *data);
     }
+
 }
