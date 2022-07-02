@@ -3,6 +3,18 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
+char* get_ticker() {
+    FILE *fp = fopen("../TickerList.txt", "r");
+    char *iter;
+    while (1) {
+        iter = fgetc(fp);
+        if (isspace(iter)) break;
+        printf("%c", iter);
+    }
+    printf("\n");
+    return iter;
+}
+
 int get_html(char *companyname){
     WSADATA wsaData;
     SOCKET hostSock = INVALID_SOCKET;
@@ -123,13 +135,13 @@ char *find_data() {
             diter = diter - count;
             count = 0;
         }
-        
+
         if (*diter == 'd') {
             flag = 1;
         }
         if (flag) {
             //printf("%c", iter);
-            if (count2 == 0){
+            if (count2 == 0) {
                 kill = 1;
             }
             else {
@@ -143,19 +155,15 @@ char *find_data() {
             break;
         }
     }
-
-    
-
     return num;
 }
 
 int main(){
-
-    get_html("BP");
+    char *company = get_ticker();
+    get_html("Microsoft");
     char *data = find_data();
     for (int i = 0; i < 9; i++) {
         data++;
         printf("%c", *data);
     }
-
 }
