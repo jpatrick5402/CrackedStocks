@@ -5,7 +5,7 @@
 
 char* get_ticker() {
     FILE *fp = fopen("../TickerList.txt", "r");
-    char *iter;
+    int iter;
     while (1) {
         iter = fgetc(fp);
         if (isspace(iter)) break;
@@ -16,12 +16,15 @@ char* get_ticker() {
 }
 
 int get_html(char *companyname){
+    
     WSADATA wsaData;
     SOCKET hostSock = INVALID_SOCKET;
     struct addrinfo *hostAddrInfo = NULL, *attemptAddrInfo = NULL, hintsAddrInfo;
 //    char *sendbuf = "GET /search?q=Microsoft+Stocks HTTP/1.1\n\n";
     char sendbuf[100];
+    
     sprintf(sendbuf, "%s%s%s", "GET /search?q=",companyname,"+Stocks HTTP/1.1\n\n");
+
     char recvbuf[ 512 ];
     int recvbuflen = 512;
     int result;
@@ -31,7 +34,7 @@ int get_html(char *companyname){
         printf( "WSAStartup failed with error: %d\n", result );
         return -1;
     }
-
+    
     ZeroMemory( &hintsAddrInfo, sizeof(hintsAddrInfo) );
     hintsAddrInfo.ai_family = AF_UNSPEC;
     hintsAddrInfo.ai_socktype = SOCK_STREAM;
@@ -43,6 +46,8 @@ int get_html(char *companyname){
         WSACleanup( );
         return -2;
     }
+    
+
 
     for( attemptAddrInfo = hostAddrInfo; attemptAddrInfo != NULL ; attemptAddrInfo = attemptAddrInfo->ai_next ) {
 
@@ -63,7 +68,7 @@ int get_html(char *companyname){
         }
         break;
     }
-
+    
     freeaddrinfo( hostAddrInfo );
 
     if( hostSock == INVALID_SOCKET ) {
@@ -124,6 +129,7 @@ char *find_data() {
     int flag = 0;
     int kill = 0;
     char* num;
+
     while (1) {
         iter = fgetc(fp);
         if (iter == *diter) {
@@ -159,11 +165,14 @@ char *find_data() {
 }
 
 int main(){
-    char *company = get_ticker();
-    get_html("Microsoft");
-    char *data = find_data();
-    for (int i = 0; i < 9; i++) {
-        data++;
-        printf("%c", *data);
+    while (1) {
+        char *company = get_ticker();
+        get_html(company);
+        char* data = find_data();
+        for (int i = 0; i < 9; i++) {
+            data++;
+            printf("%c", *data);
+        }
+        printf("\n");
     }
 }
