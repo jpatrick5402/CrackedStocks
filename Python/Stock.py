@@ -1,6 +1,8 @@
+from pydoc import describe
 import requests
 import os
 import time
+import datetime
 
 def get_company_names(): #Gets ticker name for every U.S. company on nasdaq
     with open("../TickerList.txt", "r") as f:
@@ -73,17 +75,28 @@ def evaluate(data):
     else:
         return "---FAILURE"
 
+def evaluate_API(data):
+    timestr = str(datetime.date.today())
+    if int(timestr[-2:]) - 1 < 10:
+        yesterday = "0" + str(int(timestr[-2:])-1)
+    else:
+        yesterday = timestr[0:8] + str(int(timestr[-2:]) - 1)
+    print(data["Time Series (5min)"][f"2022-07-{yesterday} 12:00:00"])
+    print(data["Time Series (5min)"][f"2022-07-{yesterday} 16:00:00"])
+    print(data["Time Series (5min)"][f"2022-07-{yesterday} 20:00:00"])
+
 #Automatically invest with API
-def invest():
+def invest(dec):
     pass
 
 def main():
     total = get_company_names()
-    print(total[0].split(" ")[0])
     for i in total:
         print(i.split(" ")[0])
         data = get_stock_info_API(i.split(" ")[0])
-        time.sleep(1)
+        decision = evaluate_API(data)
+        invest(decision)
+        time.sleep(173)
 
 if __name__ == "__main__":
     main()
