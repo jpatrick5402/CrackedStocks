@@ -1,102 +1,60 @@
-from pydoc import describe
 import requests
 import os
 import time
+import json
 import datetime
+import robin_stocks
+
 
 def get_company_names(): #Gets ticker name for every U.S. company on nasdaq
     with open("../TickerList.txt", "r") as f:
         namelist = f.readlines()
     return namelist
 
-#Scrape the web and find the company's stock data
-def get_stock_info(ncompany):
-    #Getting the url
-    URL = "https://www.google.com/search?q={}+stock".format(ncompany)
-    page = requests.get(URL)
-    formatted = page.text.split("<")
-
-    #Parsing the google webpage for the exact data
-    for index in formatted:
-        if "BNeawe iBp4i AP7Wnd" in index:
-            h=index.split(">")
-            if h[-1] != "":
-                price = h[-1].replace(",","")
-                price = float(price)
-                break
-        else:
-            price = 0
-
-
-    changes = []
-    #Looking for more nums
-    for index in formatted:
-        if "UMOHqf fePwtd" in index:
-            changes.append(float(index[0:-8].split(">")[-1].replace(",","")))
-
-        if "UMOHqf JoSNhf" in index:
-            changes.append(float(index[0:-8].split(">")[-1].replace(",","")))
-    #Creating variables
-    if len(changes) == 1:
-        duringhours = changes[0]
-        afterhours = 0
-    elif len(changes) == 2:
-        duringhours = changes[0]
-        afterhours = changes[1]
-    elif len(changes) == 0:
-        duringhours = 0
-        afterhours = 0
-    else:
-        duringhours = 0
-        afterhours = 0
-
-   #Checking if a variable is unspecified
-    if price == "NULL" or duringhours == "NULL" or afterhours == "NULL":
-        #print("ERROR: INCORECTD WEB FORMATTING")
-        #print("NOTE: Try a different company.")
-        pass
-        
-    return {"price":price,"duringhours":duringhours,"afterhours":afterhours}
-
 def get_stock_info_API(company): #Gets critical stock information from Alpha Vantage API
-    Key = os.environ.get("KEY")
-    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={company}&interval=5min&apikey={Key}'
-    r = requests.get(url)
-    data = r.json()
-    return data
-    
-#Determine to Buy or Sell
-def evaluate(data):
-    if data["price"] != "NULL" and data["duringhours"] != "NULL" and data["afterhours"] != "NULL":
-        if data["duringhours"] + data["afterhours"] < 0:
-            return "---SELL"
-        elif data["duringhours"] + data["afterhours"] > 0:
-            return "---BUY"
-    else:
-        return "---FAILURE"
+    try:
+        Key = os.environ.get("KEY")
+        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={company}&interval=5min&apikey={Key}'
+        r = requests.get(url)
+        data = r.json()
+        print("---Data reveived")
+        return data
+    except:
+        print("---Using Prior Data")
+        with open("PriorPrice.json", "r") as f:
+            data = json.load(f)
+        return data
+
 
 def evaluate_API(data):
-    timestr = str(datetime.date.today())
-    if int(timestr[-2:]) - 1 < 10:
-        yesterday = "0" + str(int(timestr[-2:])-1)
-    else:
-        yesterday = timestr[0:8] + str(int(timestr[-2:]) - 1)
-    print(data["Time Series (5min)"][f"2022-07-{yesterday} 12:00:00"])
-    print(data["Time Series (5min)"][f"2022-07-{yesterday} 16:00:00"])
-    print(data["Time Series (5min)"][f"2022-07-{yesterday} 20:00:00"])
+    try:
+        timestr = str(datetime.date.today())
+        if int(timestr[-2:]) - 1 < 10:
+            yesterday = "0" + str(int(timestr[-2:])-1)
+        else:
+            yesterday = timestr[0:8] + str(int(timestr[-2:]) - 1)
+        print(data["Time Series (5min)"][f"2022-07-{yesterday} 12:00:00"])
+        print(data["Time Series (5min)"][f"2022-07-{yesterday} 16:00:00"])
+        print(data["Time Series (5min)"][f"2022-07-{yesterday} 20:00:00"])
+    except:
+        return False
 
-#Automatically invest with API
+#Invest with API
 def invest(dec):
     pass
+
+def save(data):
+    
+    return 0
 
 def main():
     total = get_company_names()
     for i in total:
-        print(i.split(" ")[0])
+        print("\n"+i.split(" ")[0]+"\n")
         data = get_stock_info_API(i.split(" ")[0])
         decision = evaluate_API(data)
         invest(decision)
-        time.sleep(173)
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
